@@ -12,11 +12,11 @@ import com.google.common.collect.Multisets;
  *
  */
 public class GenreUtils {
-	
+
 	/**
 	 * Determines the most popular genre out of an array of strings (genres)
-	 * that represent user votes. Ties are broken by choosing the genre
-	 * that was voted on first.
+	 * that represent user votes. Ties are broken by choosing the genre that was
+	 * voted on first.
 	 * 
 	 * @param genreList
 	 * @return genre
