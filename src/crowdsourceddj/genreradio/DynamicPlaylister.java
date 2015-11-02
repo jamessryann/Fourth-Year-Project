@@ -42,7 +42,20 @@ public class DynamicPlaylister {
 	public static void setMinDanceability(float f) {
 		params.setMinDanceability(f);
 	}
-
+	
+	public static Playlist createPlaylist(DynamicPlaylistSession session)
+	{
+		Playlist playlist = null;
+		try {
+			playlist = session.next();
+		} catch (EchoNestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return playlist;
+	}
+	
+	
 	public static List<String> getSpotifyTrackIds(Playlist playlist)
 			throws EchoNestException {
 		List<String> spotifyIds = new ArrayList<String>();

@@ -27,7 +27,7 @@ public class GenreRadio {
 
 		DynamicPlaylistParams params = new DynamicPlaylistParams();
 		params.setType(PlaylistParams.PlaylistType.GENRE_RADIO);
-		params.addGenre("trap music");
+		params.addGenre("rock");
 		params.setMinEnergy(.5f);
 		params.setMinDanceability(.75f);
 		params.setArtistMinFamiliarity(.7f);
