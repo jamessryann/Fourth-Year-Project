@@ -37,7 +37,7 @@ public class MessageHandler extends AsyncTask<Integer, Void, Void>{
             		act.discoverBT();
 	                for(int i =0;i<act.mArrayAdapter.getCount();i++) {
 	                    if(act.mArrayAdapter.getItem(i).contains(args)){
-	                        pw.println("device found");
+	                        pw.println("pass");
 	                    }
 	                }
             	}
