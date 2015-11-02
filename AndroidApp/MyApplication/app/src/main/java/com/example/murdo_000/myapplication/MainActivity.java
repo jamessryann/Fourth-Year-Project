@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_ENABLE_BT = 0;
     protected final ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(this,0);
+    final BluetoothAdapter mBluetoothAdapter;
 
 
     @Override
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button b = (Button) findViewById(R.id.button);
         final Spinner s = (Spinner) findViewById(R.id.spinner);
-        final BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         final MainActivity temp = this;
 
 
@@ -82,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
         }
-        mBluetoothAdapter.startDiscovery();
+    }
+    
+    public void discoverBT(){
+    	mArrayAdapter.clear();
+    	mBluetoothAdapter.startDiscovery();
     }
 
     @Override

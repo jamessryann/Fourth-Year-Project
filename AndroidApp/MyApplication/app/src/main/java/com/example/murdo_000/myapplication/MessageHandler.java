@@ -30,12 +30,17 @@ public class MessageHandler extends AsyncTask<Integer, Void, Void>{
             pw.println(message);
             Scanner sc = new Scanner(host.getInputStream());
             while(sc.hasNextLine()){
-                for(int i =0;i<act.mArrayAdapter.getCount();i++) {
-                    String s = sc.nextLine();
-                    if(act.mArrayAdapter.getItem(i).contains(s)){
-                        pw.println("device found");
-                    }
-                }
+            	String s = sc.nextLine();
+            	String method = s.split(":")[0];
+            	String args = s.split(":")[1];
+            	if(method.contains("check:")){
+            		act.discoverBT();
+	                for(int i =0;i<act.mArrayAdapter.getCount();i++) {
+	                    if(act.mArrayAdapter.getItem(i).contains(args)){
+	                        pw.println("device found");
+	                    }
+	                }
+            	}
             }
         }catch (IOException e){
             e.printStackTrace();
