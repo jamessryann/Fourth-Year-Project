@@ -1,0 +1,5 @@
+com.wrapper.spotify
+com.wrapper.spotify.exceptions
+com.wrapper.spotify.methods
+com.wrapper.spotify.methods.authentication
+com.wrapper.spotify.models
