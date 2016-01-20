@@ -6,9 +6,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import crowdsourceddj.genreradio.DynamicPlaylister;
+import crowdsourceddj.utils.GenreUtils;
 
 public class VotingServerThread extends Thread {
-	
 	private Socket clientSocket;
 	
 	public VotingServerThread(Socket client){
@@ -27,7 +27,7 @@ public class VotingServerThread extends Thread {
 					message = sc.next();
 					System.out.println("Got message from device: "+message);
 					if(message.contains(";") && ProxDetector.checkAddress(message.split(";")[1])){
-						DynamicPlaylister.addGenre(message.split(";")[0]);
+						GenreUtils.addGenre(message.split(";")[0]);
 					}
 					quit = true;
 				}

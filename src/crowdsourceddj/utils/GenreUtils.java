@@ -1,5 +1,6 @@
 package crowdsourceddj.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.google.common.collect.HashMultiset;
@@ -12,6 +13,8 @@ import com.google.common.collect.Multisets;
  *
  */
 public class GenreUtils {
+	
+	private static ArrayList<String> genres = new ArrayList<String>();
 
 	/**
 	 * Determines the most popular genre out of an array of strings (genres)
@@ -28,11 +31,26 @@ public class GenreUtils {
 					.asList(genreList));
 			ImmutableMultiset<String> immumset = Multisets
 					.copyHighestCountFirst(multiset);
+			for(Object item : immumset.toArray())
+			{
+				System.out.println(item.toString());
+			}
 			genre = immumset.toArray()[0].toString();
+			
 			return genre;
 		} catch (ArrayIndexOutOfBoundsException e) {
 			String genre = "";
 			return genre;
 		}
+	}
+	
+	public static void addGenre(String genre)
+	{
+		genres.add(genre);
+	}
+	
+	public static String[] getGenres()
+	{
+		return genres.toArray(new String[genres.size()]);
 	}
 }

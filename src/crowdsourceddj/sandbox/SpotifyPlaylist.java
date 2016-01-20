@@ -19,18 +19,18 @@ public class SpotifyPlaylist {
 	public static void main(String[] args) {
 		Api api = Api.DEFAULT_API;
 		// Create a request object for the type of request you want to make
-		AlbumRequest request = api.getAlbum("5wYgsQRpjIoYHGdGvpbsBf").build();
-		// Retrieve an album
-		try {
-			Album album = request.get();
-
-			// Print the genres of the album
-			String titles = album.getName();
-			System.out.println(titles);
-
-		} catch (Exception e) {
-			System.out.println("Could not get albums.");
-		}
+//		AlbumRequest request = api.getAlbum("5wYgsQRpjIoYHGdGvpbsBf").build();
+//		// Retrieve an album
+//		try {
+//			Album album = request.get();
+//
+//			// Print the genres of the album
+//			String titles = album.getName();
+//			System.out.println(titles);
+//
+//		} catch (Exception e) {
+//			System.out.println("Could not get albums.");
+//		}
 
 		final String clientId = "ded9a884dd72482c95d93c88246dac5b";
 		final String clientSecret = "91044c2cf9a747f38d204037313c09b8";
