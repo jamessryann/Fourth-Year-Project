@@ -21,10 +21,17 @@ public class DynamicPlaylister {
 			throws EchoNestException {
 		EchoNestAPI en = new EchoNestAPI("FXUOGXLAT1LT9BJ4M");
 		params.setType(PlaylistParams.PlaylistType.GENRE_RADIO);
+		params.setMinEnergy(.5f);
+		params.setMinDanceability(.75f);
+		params.setArtistMinFamiliarity(.7f);
 		params.includeAudioSummary();
 		params.includeTracks();
 		DynamicPlaylistSession session = en.createDynamicPlaylist(params);
 		return session;
+	}
+
+	public static void resetParams() {
+		params = new DynamicPlaylistParams();
 	}
 
 	public static void addGenre(String genre) {
@@ -42,9 +49,8 @@ public class DynamicPlaylister {
 	public static void setMinDanceability(float f) {
 		params.setMinDanceability(f);
 	}
-	
-	public static Playlist createPlaylist(DynamicPlaylistSession session)
-	{
+
+	public static Playlist createPlaylist(DynamicPlaylistSession session) {
 		Playlist playlist = null;
 		try {
 			playlist = session.next();
@@ -55,6 +61,17 @@ public class DynamicPlaylister {
 		return playlist;
 	}
 	
+	public static Playlist nextSong(DynamicPlaylistSession session)
+	{
+		Playlist playlist = null;
+		try {
+			playlist = session.next();
+		} catch (EchoNestException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return playlist;
+	}
 	
 	public static List<String> getSpotifyTrackIds(Playlist playlist)
 			throws EchoNestException {

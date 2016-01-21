@@ -8,6 +8,9 @@ import com.echonest.api.v4.EchoNestException;
 import com.echonest.api.v4.Playlist;
 import com.echonest.api.v4.PlaylistParams;
 import com.echonest.api.v4.Song;
+
+import crowdsourceddj.utils.GenreUtils;
+
 import java.io.IOException;
 
 /**
@@ -15,6 +18,10 @@ import java.io.IOException;
  * @author James
  */
 public class GenreRadio {
+	public static void addGenre(String genre)
+	{
+		GenreUtils.addGenre(genre);
+	}
 
 	public static void main(String[] args) throws EchoNestException,
 			IOException {
@@ -27,7 +34,7 @@ public class GenreRadio {
 
 		DynamicPlaylistParams params = new DynamicPlaylistParams();
 		params.setType(PlaylistParams.PlaylistType.GENRE_RADIO);
-		params.addGenre("rock");
+		params.addGenre("rap");
 		params.setMinEnergy(.5f);
 		params.setMinDanceability(.75f);
 		params.setArtistMinFamiliarity(.7f);
@@ -65,7 +72,7 @@ public class GenreRadio {
 				session.feedback(DynamicPlaylistSession.FeedbackType.skip_song,
 						"last");
 			}
-
+			
 			if (c == 'n') {
 				Playlist playlist = session.next();
 				System.out.println(playlist.getSongs().size());
@@ -78,7 +85,12 @@ public class GenreRadio {
 					System.out.printf("ID:  %s\n", song.getID());
 					System.out.printf("Artist Familiarity: %f\n",
 							song.getArtistFamiliarity());
-					lastSong = song;
+					addGenre("rock");
+					String[] genres = GenreUtils.getGenres();
+					for(String g : genres)
+					{
+						System.out.println(g);
+					}
 				}
 			}
 
@@ -90,6 +102,7 @@ public class GenreRadio {
 							(float) lastSong.getTempo() * 1.2f);
 					System.out.println("steer " + steerParams);
 					session.steer(steerParams);
+					
 				}
 			}
 
