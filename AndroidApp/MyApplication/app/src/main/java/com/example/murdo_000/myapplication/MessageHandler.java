@@ -2,6 +2,7 @@ package com.example.murdo_000.myapplication;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.io.IOException;
@@ -16,10 +17,12 @@ public class MessageHandler extends AsyncTask<Integer, Void, Void>{
 
     private String message;
     private MainActivity act;
+    String localBTmac;
 
     public MessageHandler(MainActivity a, Spinner spin, String str) throws IOException{
         message = spin.getSelectedItem().toString()+";"+str;
         act = a;
+        localBTmac = str;
     }
 
     @Override
@@ -29,20 +32,37 @@ public class MessageHandler extends AsyncTask<Integer, Void, Void>{
             PrintWriter pw =  new PrintWriter(host.getOutputStream(), true);
             pw.println(message);
             Scanner sc = new Scanner(host.getInputStream());
-            while(sc.hasNextLine()){
-            	String s = sc.nextLine();
-            	String method = s.split(":")[0];
-            	String args = s.split(":")[1];
-            	if(method.contains("check:")){
-            		act.discoverBT();
-	                for(int i =0;i<act.mArrayAdapter.getCount();i++) {
-	                    if(act.mArrayAdapter.getItem(i).contains(args)){
-	                        pw.println("pass");
-	                    }
-	                }
-            	}
+            boolean hosting = true;
+            while(hosting && host.isConnected()) {
+                if (sc.hasNextLine()) {
+                    String s = sc.nextLine();
+                    String method = s.split(": ")[0];
+                    String args = s.split(": ")[1];
+                    if (method.contains("check")) {
+                        if (localBTmac.contains(args)) {
+                            pw.println("pass");
+                        } else {
+                            Thread.sleep(1000);
+                            act.discoverBT();
+                            Thread.sleep(13000);
+                            ArrayAdapter aa = act.mArrayAdapter;
+                            boolean found=false;
+                            for (int i = 0; i < aa.getCount(); i++) {
+                                if (act.mArrayAdapter.getItem(i).contains(args)) {
+                                    pw.println("pass");
+                                    found=true;
+                                }
+                            }
+                            if(!found){
+                                pw.println("fail");
+                            }
+                        }
+                    }else if(method.contains("done")){
+                        hosting=false;
+                    }
+                }
             }
-        }catch (IOException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;

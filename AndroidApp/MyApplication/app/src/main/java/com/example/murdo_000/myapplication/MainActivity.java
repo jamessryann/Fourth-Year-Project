@@ -25,8 +25,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static int REQUEST_ENABLE_BT = 0;
-    protected final ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(this,0);
-    final BluetoothAdapter mBluetoothAdapter;
+    protected ArrayAdapter<String> mArrayAdapter;
+    BluetoothAdapter mBluetoothAdapter;
 
 
     @Override
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        mArrayAdapter = new ArrayAdapter<String>(this,0);
         Button b = (Button) findViewById(R.id.button);
         final Spinner s = (Spinner) findViewById(R.id.spinner);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+                startActivity(discoverableIntent);
                 try{
                     new MessageHandler(temp, s, mBluetoothAdapter.getAddress()).execute(1);
                 }catch (IOException e){
