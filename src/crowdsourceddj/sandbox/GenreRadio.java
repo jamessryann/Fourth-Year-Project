@@ -8,18 +8,22 @@ import com.echonest.api.v4.EchoNestException;
 import com.echonest.api.v4.Playlist;
 import com.echonest.api.v4.PlaylistParams;
 import com.echonest.api.v4.Song;
+import com.echonest.api.v4.Track;
 
 import crowdsourceddj.utils.GenreUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
  * @author James
  */
 public class GenreRadio {
-	public static void addGenre(String genre)
-	{
+	public static void addGenre(String genre) {
 		GenreUtils.addGenre(genre);
 	}
 
@@ -72,7 +76,7 @@ public class GenreRadio {
 				session.feedback(DynamicPlaylistSession.FeedbackType.skip_song,
 						"last");
 			}
-			
+
 			if (c == 'n') {
 				Playlist playlist = session.next();
 				System.out.println(playlist.getSongs().size());
@@ -87,9 +91,25 @@ public class GenreRadio {
 							song.getArtistFamiliarity());
 					addGenre("rock");
 					String[] genres = GenreUtils.getGenres();
-					for(String g : genres)
-					{
+					for (String g : genres) {
 						System.out.println(g);
+					}
+
+					List<String> spotifyIds = new ArrayList<String>();
+					Track track = song.getTrack("spotify-WW");
+					System.out.println(track.getForeignID() + " "
+							+ song.getTitle() + " by " + song.getArtistName());
+					Pattern p = Pattern.compile("spotify(-.+?):");
+					Matcher m = p.matcher(track.getForeignID());
+					if (m.find()) {
+						System.out.println(m.group(1));
+						spotifyIds.add(track.getForeignID().replaceAll(
+								"(-.+?):", ":"));
+					} else {
+						spotifyIds.add(track.getForeignID());
+					}
+					for (String s : spotifyIds) {
+						System.out.println(s);
 					}
 				}
 			}
@@ -102,7 +122,7 @@ public class GenreRadio {
 							(float) lastSong.getTempo() * 1.2f);
 					System.out.println("steer " + steerParams);
 					session.steer(steerParams);
-					
+
 				}
 			}
 

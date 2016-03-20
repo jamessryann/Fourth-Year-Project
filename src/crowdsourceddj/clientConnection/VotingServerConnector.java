@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import com.echonest.api.v4.DynamicPlaylistSession;
 import com.echonest.api.v4.EchoNestException;
@@ -135,9 +136,13 @@ public class VotingServerConnector {
 							boolean awaitingConnection = true;
 							while (awaitingConnection) {
 								previousGenre = currentGenre;
+								System.out.println("Awaiting Connection");
 								new VotingServerThread(host.accept()).start();
+								TimeUnit.SECONDS.sleep(3);
+								System.out.println("Accepted");
 								currentGenre = GenreUtils
 										.genreSelect(GenreUtils.getGenres());
+								System.out.println("Current Genre is: " + currentGenre + "!");
 								if (currentGenre != null
 										&& !currentGenre.isEmpty()) {
 									if (songCount == 0) {
@@ -159,7 +164,7 @@ public class VotingServerConnector {
 											request.get();
 										} catch (Exception e) {
 											System.out
-													.println("Something went wrong adding the track!"
+													.println("Something went wrong adding the track! 1"
 															+ e.getMessage());
 										}
 										songCount += 1;
@@ -186,7 +191,7 @@ public class VotingServerConnector {
 											request.get();
 										} catch (Exception e) {
 											System.out
-													.println("Something went wrong adding the track!"
+													.println("Something went wrong adding the track! 2"
 															+ e.getMessage());
 										}
 										songCount += 1;
@@ -206,7 +211,7 @@ public class VotingServerConnector {
 											request.get();
 										} catch (Exception e) {
 											System.out
-													.println("Something went wrong adding the track!"
+													.println("Something went wrong adding the track! 3"
 															+ e.getMessage());
 										}
 										songCount += 1;
@@ -216,7 +221,7 @@ public class VotingServerConnector {
 								}
 							}
 							host.close();
-						} catch (IOException | EchoNestException e) {
+						} catch (IOException | EchoNestException | InterruptedException e) {
 							e.printStackTrace();
 						}
 

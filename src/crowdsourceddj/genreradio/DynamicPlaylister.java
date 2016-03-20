@@ -2,6 +2,8 @@ package crowdsourceddj.genreradio;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.echonest.api.v4.DynamicPlaylistParams;
 import com.echonest.api.v4.DynamicPlaylistSession;
@@ -16,6 +18,8 @@ import com.echonest.api.v4.Track;
 public class DynamicPlaylister {
 
 	private static DynamicPlaylistParams params = new DynamicPlaylistParams();
+	
+	private static Pattern p = Pattern.compile("spotify(-.+?):");
 
 	public static DynamicPlaylistSession createPlaylistSession()
 			throws EchoNestException {
@@ -25,7 +29,6 @@ public class DynamicPlaylister {
 		params.setMinDanceability(.75f);
 		params.setArtistMinFamiliarity(.7f);
 		params.includeAudioSummary();
-		params.includeTracks();
 		DynamicPlaylistSession session = en.createDynamicPlaylist(params);
 		return session;
 	}
@@ -80,7 +83,17 @@ public class DynamicPlaylister {
 			Track track = song.getTrack("spotify-WW");
 			System.out.println(track.getForeignID() + " " + song.getTitle()
 					+ " by " + song.getArtistName());
-			spotifyIds.add(track.getForeignID());
+			Matcher m = p.matcher(track.getForeignID());
+			if (m.find()) {
+				System.out.println(m.group(1));
+				spotifyIds.add(track.getForeignID().replaceAll(
+						"(-.+?):", ":"));
+			} else {
+				spotifyIds.add(track.getForeignID());
+			}
+			for (String s : spotifyIds) {
+				System.out.println(s);
+			}
 		}
 		return spotifyIds;
 	}
