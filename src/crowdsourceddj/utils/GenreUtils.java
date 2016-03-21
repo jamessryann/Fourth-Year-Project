@@ -13,7 +13,7 @@ import com.google.common.collect.Multisets;
  *
  */
 public class GenreUtils {
-	
+
 	private static ArrayList<String> genres = new ArrayList<String>();
 
 	/**
@@ -31,26 +31,34 @@ public class GenreUtils {
 					.asList(genreList));
 			ImmutableMultiset<String> immumset = Multisets
 					.copyHighestCountFirst(multiset);
-			for(Object item : immumset.toArray())
-			{
+			for (Object item : immumset.toArray()) {
 				System.out.println(item.toString());
 			}
 			genre = immumset.toArray()[0].toString();
-			
+
 			return genre;
 		} catch (ArrayIndexOutOfBoundsException e) {
 			String genre = "";
 			return genre;
 		}
 	}
-	
-	public static void addGenre(String genre)
-	{
+
+	public static void addGenre(String genre) {
 		genres.add(genre);
 	}
-	
-	public static String[] getGenres()
-	{
+
+	public static void removeGenre(String genre) {
+		for (int i = 0; i < genres.size(); i++) {
+			String tempName = genres.get(i);
+			if (tempName.equals(genre)) {
+				genres.remove(i);
+				break;
+			}
+
+		}
+	}
+
+	public static String[] getGenres() {
 		return genres.toArray(new String[genres.size()]);
 	}
 }
