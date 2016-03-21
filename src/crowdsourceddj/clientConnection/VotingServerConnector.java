@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.echonest.api.v4.DynamicPlaylistSession;
@@ -85,6 +88,7 @@ public class VotingServerConnector {
 					public void onSuccess(
 							AuthorizationCodeCredentials authorizationCodeCredentials) {
 						System.out.println("Success!");
+						final AuthorizationCodeCredentials aCFinal = authorizationCodeCredentials;
 						/* The tokens were retrieved successfully! */
 						System.out
 								.println("Successfully retrieved an access token! "
@@ -115,6 +119,7 @@ public class VotingServerConnector {
 										"CSDj:" + playlistCreationDate)
 								.publicAccess(true).build();
 						try {
+							TimeUnit.SECONDS.sleep(3);
 							final Playlist playlist = prequest.get();
 							playlistId = playlist.getId();
 							System.out
@@ -128,9 +133,47 @@ public class VotingServerConnector {
 						}
 						api.setRefreshToken(authorizationCodeCredentials
 								.getRefreshToken());
-						// Start-Up Echonest API
 						// Listen for votes
 						try {
+							// Set up vote retriggering
+							Runnable songRunnable = new Runnable() {
+								public void run() {
+									if (songCount != 0) {
+										try {
+											com.echonest.api.v4.Playlist playlist = DynamicPlaylister
+													.nextSong(session);
+											List<String> tracksToAdd;
+											tracksToAdd = DynamicPlaylister
+													.getSpotifyTrackIds(playlist);
+
+											AddTrackToPlaylistRequest request = api
+													.addTracksToPlaylist(
+															username,
+															playlistId,
+															tracksToAdd)
+													.position(songCount)
+													.build();
+											request.get();
+										} catch (Exception e) {
+											System.out
+													.println("Something went wrong adding the track!"
+															+ e.getMessage());
+										}
+										songCount += 1;
+										api.setRefreshToken(aCFinal
+												.getRefreshToken());
+									}
+									else {
+										System.out.println("No votes yet");
+									}
+								}
+							};
+
+							ScheduledExecutorService executor = Executors
+									.newScheduledThreadPool(1);
+							executor.scheduleAtFixedRate(songRunnable, 5, 10,
+									TimeUnit.SECONDS);
+
 							ServerSocket host = new ServerSocket(portNum);
 							String previousGenre;
 							boolean awaitingConnection = true;
@@ -142,7 +185,8 @@ public class VotingServerConnector {
 								System.out.println("Accepted");
 								currentGenre = GenreUtils
 										.genreSelect(GenreUtils.getGenres());
-								System.out.println("Current Genre is: " + currentGenre + "!");
+								System.out.println("Current Genre is: "
+										+ currentGenre + "!");
 								if (currentGenre != null
 										&& !currentGenre.isEmpty()) {
 									if (songCount == 0) {
@@ -218,10 +262,12 @@ public class VotingServerConnector {
 										api.setRefreshToken(authorizationCodeCredentials
 												.getRefreshToken());
 									}
+
 								}
 							}
 							host.close();
-						} catch (IOException | EchoNestException | InterruptedException e) {
+						} catch (IOException | EchoNestException
+								| InterruptedException e) {
 							e.printStackTrace();
 						}
 
@@ -240,6 +286,7 @@ public class VotingServerConnector {
 	}
 
 	public static void main(String[] args) {
+
 		try {
 			VotingServerConnector vs = new VotingServerConnector(4545);
 		} catch (IOException e) {
